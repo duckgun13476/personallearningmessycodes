@@ -44,6 +44,8 @@ class Sigmoid:
     # 前向传播 输入dL/dy 输出y(1-y)*dL/dy  # ↑
     # 即得到其输出的变化率对于输入变化率的影响，即变量反向传播后的输入值变化量
 
+
+
 if __name__ == '__main__':
     print("start!")
 
