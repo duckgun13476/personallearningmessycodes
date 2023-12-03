@@ -19,23 +19,23 @@ B = np.random.rand(b)  # 偏置
 
 
 class Affine:
-    def __init__(self, W, B):
-        self.W = W
-        self.B = B
+    def __init__(self, W_1, B_1):
+        self.W = W_1
+        self.B = B_1
         self.X = None
         self.dW = None
         self.dB = None
 
-    def forward(self, X):
-        self.X = X
-        out = np.dot(self.W, X) + self.B
+    def forward(self, X_1):
+        self.X = X_1
+        out = np.dot(self.W, X_1) + self.B
         return out
 
     def backward(self, dout):
-        dX = np.dot(self.W.T, dout)
+        dx = np.dot(self.W.T, dout)
         # self.dW = np.dot(self.X.T, dout)
         self.dB = np.sum(dout, axis=0)
-        return dX
+        return dx
 
 
 if __name__ == '__main__':

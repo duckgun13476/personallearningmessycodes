@@ -1,31 +1,79 @@
 import numpy as np
 
 
+def double_1(x):
+    y = 2 * x
+    return y
+
+
 class LayerBasic:
     def __init__(self):
         self.x = None
         self.y = None
+        self.out = None
 
     def forward_multiplication(self, x, y):
         self.x = x
         self.y = y
         return x * y
+
     # 乘法正向传播↑
 
-    def backward_multiplication(self, out):
-        dx = self.y * out
-        dy = self.x * out
+    def backward_multiplication(self, out_2):
+        dx = self.y * out_2
+        dy = self.x * out_2
         return dy, dx
+
     # 乘法反向传播↑
 
     def forward_add(self, x, y):
-        out = x + y
-        return out
+        self.x = x
+        self.y = y
+        se3_out = self.x + self.y
+        return se3_out
+
     # 加法正向传播↑
 
-    def backward_add(self, out):
-        return out
+    def backward_add(self, out_3):
+        self.out = out_3
+        return self.out
     # 加法反向传播↑
+
+
+class Affine:
+    def __init__(self, W, B):
+        self.W = W
+        self.B = B
+        self.X = None
+        self.dW = None
+        self.dB = None
+
+    def forward(self, X):
+        self.X = X
+        out_4 = np.dot(self.W, X) + self.B
+        return out_4
+
+    def backward(self, dout_1):
+        dx = np.dot(self.W.T, dout_1)
+        # self.dW = np.dot(self.X.T, dout)
+        self.dB = np.sum(dout_1, axis=0)
+        return dx
+
+
+class Relu:
+    def __init__(self):
+        self.mask = None
+
+    def forward(self, x):
+        self.mask = (x <= 0)
+        se2_out = x.copy()
+        se2_out[self.mask] = 0
+        return se2_out
+
+    def backward(self, dout_5):
+        dout_5[self.mask] = 0
+        dx = dout_5
+        return dx
 
 
 class Sigmoid:
@@ -33,13 +81,14 @@ class Sigmoid:
         self.out = None
 
     def forward(self, x):
-        out = 1 / (1 + np.exp(-x))
-        self.out = out
-        return out
+        se1_out = 1 / (1 + np.exp(-x))
+        self.out = se1_out
+        return se1_out
+
     # 前向传播 输入x 输出y  ↑
 
-    def backward(self,dout):
-        dx = dout * (1.0-self.out)*self.out
+    def backward(self, dout_6):
+        dx = dout_6 * (1.0 - self.out) * self.out
         return dx
     # 前向传播 输入dL/dy 输出y(1-y)*dL/dy  # ↑
     # 即得到其输出的变化率对于输入变化率的影响，即变量反向传播后的输入值变化量
@@ -73,6 +122,13 @@ if __name__ == '__main__':
     # sigmoid函数正反传播
     out = test_layer.forward(0)
     dout = test_layer.backward(10)
-    print(out,dout)
+    print(out, dout)
 
+    # Rulu层正反传播
+    XR = np.array([-1, -2, 0, 3, 4])
+    print(XR)
+    Rulu_1 = Relu()
+    out = Rulu_1.forward(XR)
+    dout = Rulu_1.backward(XR)
+    print(out, dout)
     print("ended!")
