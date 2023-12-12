@@ -41,7 +41,17 @@ def debug(func):
 
     return wrapper
 
+###################################################
 
+def error(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        print(f"名称：{func.__name__}, args:{args},kwargs:{kwargs}")
+        result = func(*args, **kwargs)
+        print(f"函数{func.__name__} 返回了 ：{result}")
+        return result
+
+    return wrapper
 ###################################################
 # 用于缓存先前调用的结果以重复使用，用于加速高运算重复调用的情况v1.0
 def memoize(func):

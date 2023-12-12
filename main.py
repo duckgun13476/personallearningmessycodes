@@ -11,7 +11,7 @@ def print_hi(name):
 
 @timer
 def hello():
-    print("hello,world!")
+    print(f"hello,world!")
 
 
 @memoize
