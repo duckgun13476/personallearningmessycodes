@@ -1,7 +1,6 @@
 import urllib.request
 import re
 
-
 def get_quotes(url):
     # 发送HTTP请求获取页面内容
     response = urllib.request.urlopen(url)

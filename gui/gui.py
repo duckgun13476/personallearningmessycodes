@@ -1,12 +1,28 @@
 from nicegui import ui
+import threading
+import time
+from minio_read import read_bucket_size
 
+
+#  参数更新
+def read_bucket_size_f():
+    while True:
+        bucket_size, bucket_name = read_bucket_size()
+        if bucket_size is not None:
+            bucket_size_show.set_text(f"存储桶：{bucket_name} 已使用： {bucket_size} ")  # 这里放指令
+        time.sleep(1)  # 更新频率，这里设置为每30秒更新一次
+
+
+#  主界面
 if __name__ in {"__main__", "__mp_main__"}:
     with ui.row():
         ui.label("                  ")
         ui.markdown('           <font size="7">**导航页面**</font>')
     ui.separator()
-    ui.link('这是百度的链接', 'https://www.baidu.com/')
-    ui.button('点我速度！', on_click=lambda: ui.notify('你点我了！'))
+
+    bucket_size_show = ui.label('正在读取数据：')
+    threading.Thread(target=read_bucket_size_f, daemon=True).start()  # bucket_size_show的参数更新
+
     with ui.row():
         with ui.element('div').classes('p-2 bg-blue-100'):
             with ui.link('这是minio的链接', 'http://192.168.147.107:9501/'):
@@ -95,4 +111,6 @@ if __name__ in {"__main__", "__mp_main__"}:
             ui.tooltip('我不喜欢这个页面').classes('bg-red')
     with ui.label('这里已经到底啦！'):
         ui.tooltip('~~喵~~').classes('bg-purple')
+
+    # 启动 GUI
     ui.run(port=8012)
