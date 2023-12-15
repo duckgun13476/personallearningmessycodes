@@ -2,6 +2,7 @@ from nicegui import ui
 import threading
 import time
 from minio_read import read_bucket_size
+from weather_read import get__weather
 
 bucket_size = 0
 bucket_size_1 = 0
@@ -16,18 +17,20 @@ def line_1():
         time.sleep(1)  # 更新频率，这里设置为每30秒更新一次
 
 
-def update_bucket_size_1():
-    global bucket_size_1
+def update_weather():
     while True:
-        bucket_size_1 = bucket_size_1 + 1
-        if bucket_size is not None:
-            size_label_1.set_text(f"线程2: {bucket_size_1} bytes")  # 这里放指令
-        time.sleep(0.5)  # 更新频率，这里设置为每0.5秒更新一次
+        time.sleep(18000)  # 更新频率，这里设置为每5h更新一次
+        weather_str_out = get__weather()
+        weather_info = weather_str_out.replace("\n", "<br>")
+        if weather_info is not None:
+            weather_label_1.set_content(f"{weather_info}")  # 这里放指令
 
 
 # 创建 GUI
-size_label = ui.label('加载数据中...')
-threading.Thread(target=line_1, daemon=True).start()
-size_label_1 = ui.label('加载数据中...')
-threading.Thread(target=update_bucket_size_1, daemon=True).start()
+with ui.element('div').classes('p-2 bg-pink-100'):
+    size_label = ui.label('加载数据中...')
+    threading.Thread(target=line_1, daemon=True).start()
+
+weather_label_1 = ui.html('加载天气数据中...<br><br><br><br><br><br><br>')
+threading.Thread(target=update_weather, daemon=True).start()
 ui.run(port=8013)

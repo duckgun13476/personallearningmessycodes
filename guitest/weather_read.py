@@ -1,8 +1,8 @@
 import urllib.request
 import re
 from sugar import *
-
-
+from datetime import datetime
+year = datetime.now().year
 @timer
 def get_html(url):
     # 发送HTTP请求获取页面内容
@@ -25,10 +25,15 @@ def handle_weather(html_content_2):
              r'class="day-item">\n         (.*?)\n        </div> \n        <div class="day-item">\n         (.*?)\n  '
              r'      </div> \n       </div> \n')
     matches1 = re.findall(date1, str(matches[0][1]), re.DOTALL)
-    print(f'天气如下：')
+    return matches1
+
+
+def process_weather_data(matches1):
+    weather_info = "天气如下：\n"  # 初始化一个空字符串用于累加天气信息
+
     for match in matches1:
         day = match[0]
-        date = match[1]
+        date_1 = match[1]
         weather_1 = match[3]
         wind = match[4]
         wave = match[5]
@@ -36,17 +41,21 @@ def handle_weather(html_content_2):
         low_temp = match[8]
         unknown = match[11]
         wave_speed = match[12]
-        print(
-            f"日期：2023/{date}  星期{day}  {weather_1} {wind}{wave}     温度：{low_temp}~{high_temp} {unknown}{wave_speed}")
-    return matches1
+
+        # 将每天的天气信息添加到字符串中，每天的信息后加上换行符
+        weather_info += f"日期：{year}/{date_1}  星期{day}  {weather_1} {wind}{wave}     温度：{low_temp}~{high_temp} {unknown}{wave_speed}\n"
+
+    return weather_info  # 返回累加后的天气信息字符串
 
 
 def get__weather():
     url = 'https://weather.cma.cn/web/weather/59948.html'
     html_content = get_html(url)
     weather_out = handle_weather(html_content)
-    return weather_out
+    weather_print = process_weather_data(weather_out)
+    return weather_print
 
 
 if __name__ == '__main__':
     weather = get__weather()
+    print(weather)
