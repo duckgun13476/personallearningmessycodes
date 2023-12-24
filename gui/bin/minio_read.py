@@ -1,11 +1,13 @@
 from minio import Minio
 from minio.error import S3Error
+from sugar import *
 
 
 #  用于获取minio存储桶的体积
+#  @timer
 def get_bucket_size(client, bucket_name_2):
     try:
-        objects = client.list_objects(bucket_name_2)
+        objects = client.list_objects(bucket_name_2, recursive=True)
         total_size = sum(obj.size for obj in objects if obj.size is not None)
         return total_size
     except S3Error as e:
