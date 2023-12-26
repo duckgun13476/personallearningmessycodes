@@ -28,7 +28,7 @@ def insert_data(preasure, temperature, wet, wave):
         conn.commit()
 
         # 插入成功消息
-        print("数据成功插入")
+        print("数据成功插入!")
 
     except mysql.connector.Error as err:
         # 返回错误消息
